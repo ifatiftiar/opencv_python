@@ -1,8 +1,8 @@
 # Today lesson:  Faster launch of WEBcam
 import cv2
 
-width = 320
-height = 200
+width = 640
+height = 480
 cam = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
 # setting width and height of windows
