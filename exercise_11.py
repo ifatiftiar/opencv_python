@@ -22,21 +22,31 @@ while True:
     end_time = time.time()
     dt = end_time - start_time
     start_time = time.time()
-    start = time.time()
     _, frame = cam.read()
     frame = cv2.flip(frame, 1)
     frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     faces = face_cascade.detectMultiScale(frame_gray, 1.3, 5)
-    eyes = eye_cascade.detectMultiScale(frame_gray, 1.3, 5)
+    # eyes = eye_cascade.detectMultiScale(frame_gray)
+
+    # for face in faces:
+    #     x, y, w, h = face
+    #     cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
+
+    # for eye in eyes:
+    #     x, y, w, h = eye
+    #     cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
 
     for face in faces:
-        x, y, w, h = face
-        cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
+        x_face, y_face, w_face, h_face = face
+        cv2.rectangle(frame, (x_face, y_face), (x_face + w_face, y_face + h_face), (255, 0, 0), 2)
 
-    for eye in eyes:
-        x, y, w, h = eye
-        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
+        eye_roi = frame_gray[y_face:y_face+h_face, x_face:x_face+w_face]
+        eyes = eye_cascade.detectMultiScale(eye_roi)
+
+        for eye in eyes:
+            x_eye, y_eye, w_eye, h_eye = eye
+            cv2.rectangle(frame[y_face:y_face+h_face, x_face:x_face+w_face], (x_eye, y_eye), (x_eye+w_face, y_eye+h_eye), (0, 0, 255), 2)
 
     fps = int(1/dt)
     cv2.putText(frame, f'{fps} FPS', (30, 50), cv2.FONT_HERSHEY_COMPLEX, 1.5, (0, 255, 0), 2)
